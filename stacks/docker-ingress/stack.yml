@@ -2,3 +2,4 @@ name: docker-ingress
 description: "docker-ingress"
 pods:
   - name: docker-ingress
+    path: docker-ingress

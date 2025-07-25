@@ -1,6 +1,5 @@
-
 services:
-  din-caddy:
+  docker-ingress:
     user: ${STACK_HOST_UID:-1000}:${STACK_HOST_GID:-1000}
     image: nginxproxy/nginx-proxy
     restart: always
