@@ -3,6 +3,21 @@ services:
     image: nginxproxy/nginx-proxy
     restart: always
     volumes:
+      - certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
     ports:
       - 80
+  acme-companion:
+    user: ${STACK_HOST_UID:-1000}:${STACK_HOST_GID:-1000}
+    image: nginxproxy/acme-companion
+    restart: always
+    environment:
+      ACME_CA_URI: ${ACME_CA_URI:-https://acme-staging-v02.api.letsencrypt.org/directory}
+      DEFAULT_EMAIL: ${LETSENCRYPT_EMAIL}
+    volumes:
+      - certs:/etc/nginx/certs:rw
+      - acme:/etc/acme.sh
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+volumes:
+  certs:
+  acme:

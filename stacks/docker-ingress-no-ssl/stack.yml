@@ -1,0 +1,5 @@
+name: docker-ingress-no-ssl
+description: "docker-ingress-no-ssl"
+pods:
+  - name: docker-ingress-no-ssl
+    path: docker-ingress-no-ssl
