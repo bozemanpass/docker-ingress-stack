@@ -1,5 +1,5 @@
 services:
-  docker-ingress:
+  nginx-proxy:
     image: nginxproxy/nginx-proxy
     restart: always
     volumes:
