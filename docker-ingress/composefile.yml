@@ -4,6 +4,8 @@ services:
     user: ${STACK_HOST_UID:-1000}:${STACK_HOST_GID:-1000}
     container_name: nginx-proxy
     restart: always
+    labels:
+      - "com.github.nginx-proxy.nginx"
     environment:
       HTTP_PORT: 1080
       HTTPS_PORT: 10443
