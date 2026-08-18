@@ -1,0 +1,52 @@
+name: Update Locks
+
+# Regenerate each stack's stack.lock, pinning the external images (nginx-proxy,
+# acme-companion) to their current upstream digests, then commit and push.  This
+# is the only sanctioned way lock updates happen: delete and regenerate, never
+# hand-edit.
+#
+# Deliberately dispatch-only, no schedule: an unattended bump of the ingress and
+# ACME images is worth a human glance before it lands.
+
+on:
+  workflow_dispatch:
+
+concurrency: update-locks
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      STACKS_ROOT: stacks
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install stack
+        run: |
+          mkdir -p $HOME/bin
+          curl -L -o $HOME/bin/stack https://github.com/bozemanpass/stack/releases/latest/download/stack
+          chmod +x $HOME/bin/stack
+          echo "$HOME/bin" >> $GITHUB_PATH
+
+      - name: Regenerate locks
+        run: |
+          for stack_dir in $STACKS_ROOT/*/; do
+            echo "=== $(basename "$stack_dir")"
+            rm -f "$stack_dir/stack.lock"
+            stack prepare --stack "./$stack_dir"
+          done
+
+      - name: Commit and push if any locks changed
+        run: |
+          if [ -z "$(git status --porcelain "$STACKS_ROOT")" ]; then
+            echo "Locks unchanged; nothing to do."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "$STACKS_ROOT"/*/stack.lock
+          git commit -m "Update stack locks"
+          git push

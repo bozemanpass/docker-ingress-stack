@@ -1,0 +1,3 @@
+images:
+  nginxproxy/acme-companion: sha256:c0c0542fe1d81c3104f0804e7c6392c3acb8e8a7b2fa6537fc565069bc3e6132
+  nginxproxy/nginx-proxy: sha256:3eb23d7823fa2d288604c4cc4bfbb4e21896207e20ada7ff3f90f55086e54f6d
